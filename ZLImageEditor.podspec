@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
   s.resources             = 'Sources/*.{png,bundle}'
 
   s.subspec "Core" do |sp|
-    sp.source_files       = ["Sources/**/*.{swift,h,m}", "Sources/ZLImageEditor.h"]
+    sp.source_files       = ["Sources/**/*.{swift,h,m}"]
     sp.exclude_files      = ["Sources/General/ZLWeakProxy.swift"]
   end
 
