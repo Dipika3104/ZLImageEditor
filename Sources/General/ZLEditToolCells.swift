@@ -32,25 +32,18 @@ class ZLEditToolCell: UICollectionViewCell {
             switch toolType {
             case .draw:
                 icon.image = .zl.getImage("zl_drawLine")
-                icon.highlightedImage = .zl.getImage("zl_drawLine_selected")
             case .clip:
                 icon.image = .zl.getImage("zl_clip")
-                icon.highlightedImage = .zl.getImage("zl_clip")
             case .imageSticker:
                 icon.image = .zl.getImage("zl_imageSticker")
-                icon.highlightedImage = .zl.getImage("zl_imageSticker")
             case .textSticker:
                 icon.image = .zl.getImage("zl_textSticker")
-                icon.highlightedImage = .zl.getImage("zl_textSticker")
             case .mosaic:
                 icon.image = .zl.getImage("zl_mosaic")
-                icon.highlightedImage = .zl.getImage("zl_mosaic_selected")
             case .filter:
                 icon.image = .zl.getImage("zl_filter")
-                icon.highlightedImage = .zl.getImage("zl_filter_selected")
             case .adjust:
                 icon.image = .zl.getImage("zl_adjust")
-                icon.highlightedImage = .zl.getImage("zl_adjust_selected")
             }
             if let color = UIColor.zl.toolIconHighlightedColor {
                 icon.highlightedImage = icon.highlightedImage?
@@ -84,9 +77,9 @@ class ZLDrawColorCell: UICollectionViewCell {
         return view
     }()
     
-    lazy var bgWhiteView: UIView = {
+    lazy var bgBlackView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .white.withAlphaComponent(0.8)
         view.layer.cornerRadius = 12
         view.layer.masksToBounds = true
         view.frame = CGRect(x: 0, y: 0, width: 24, height: 24)
@@ -102,7 +95,7 @@ class ZLDrawColorCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        contentView.addSubview(bgWhiteView)
+        contentView.addSubview(bgBlackView)
         contentView.addSubview(colorView)
     }
     
@@ -115,7 +108,7 @@ class ZLDrawColorCell: UICollectionViewCell {
         super.layoutSubviews()
         
         colorView.center = contentView.center
-        bgWhiteView.center = contentView.center
+        bgBlackView.center = contentView.center
     }
 }
 

@@ -58,7 +58,8 @@ public class ZLImageEditorConfiguration: NSObject {
     public var tools: [ZLImageEditorConfiguration.EditTool] {
         get {
             if pri_tools.isEmpty {
-                return [.draw, .clip, .imageSticker, .textSticker, .mosaic, .filter, .adjust]
+//                return [.draw, .clip, .imageSticker, .textSticker, .mosaic, .filter, .adjust]
+                return [ .clip, .adjust, .filter, .draw,]
             } else {
                 return pri_tools
             }

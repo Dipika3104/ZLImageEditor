@@ -11,8 +11,8 @@ import UIKit
 import ZLImageEditor
 
 struct ContentView: View {
-    @State private var selectedImage: UIImage?
-    @State private var editImage: UIImage?
+    @State private var selectedImage: [UIImage]?
+    @State private var editImage: [UIImage]?
     @State private var selectPhoto = false
     @State private var showEditor = false
     
@@ -31,19 +31,18 @@ struct ContentView: View {
                 .clipShape(.rect(cornerSize: CGSize(width: 10, height: 10)))
                 .sheet(isPresented: $selectPhoto) {
                     PhotoPicker { image in
-                        selectedImage = image
+                        selectedImage?.append(image)
                         showEditor = true
                     }
                 }
                 .fullScreenCover(isPresented: $showEditor) {
                     if selectedImage != nil {
                         ImageEditorWrapper(
-                            originalImage: Binding<UIImage>(
+                            originalImage: Binding<[UIImage]>(
                                 get: { selectedImage! },
                                 set: { selectedImage = $0 }
                             ),
-                            editImage: $editImage,
-                            editModel: $editModel
+                            editImage: $editImage
                         )
                         .ignoresSafeArea()
                     }
@@ -54,7 +53,7 @@ struct ContentView: View {
             Spacer()
                 .frame(height: 50)
             
-            if let image = editImage ?? selectedImage {
+            if let image = editImage?.first ?? selectedImage?.first {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()

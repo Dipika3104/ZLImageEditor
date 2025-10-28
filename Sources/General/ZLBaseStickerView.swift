@@ -28,7 +28,7 @@ import UIKit
 
 protocol ZLStickerViewDelegate: NSObject {
     /// Called when scale or rotate or move.
-    func stickerBeginOperation(_ sticker: ZLBaseStickerView)
+    func stickerBeginOperation(_ sticker: ZLBaseStickerView, panGes: UIPanGestureRecognizer)
     
     /// Called during scale or rotate or move.
     func stickerOnOperation(_ sticker: ZLBaseStickerView, panGes: UIPanGestureRecognizer)
@@ -40,6 +40,8 @@ protocol ZLStickerViewDelegate: NSObject {
     func stickerDidTap(_ sticker: ZLBaseStickerView)
     
     func sticker(_ textSticker: ZLTextStickerView, editText text: String)
+    
+    func stickerDidDelete(_ sticker: ZLBaseStickerView)
 }
 
 protocol ZLStickerViewAdditional: NSObject {
@@ -104,6 +106,18 @@ class ZLBaseStickerView: UIView, UIGestureRecognizerDelegate {
         return pan
     }()
     
+    private lazy var deleteButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
+        button.tintColor = .white
+        button.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        button.layer.cornerRadius = 12
+        button.layer.masksToBounds = true
+        button.addTarget(self, action: #selector(moveToAshbin), for: .touchUpInside)
+        button.frame = CGRect(x: -4, y: -4, width: 24, height: 24)
+        return button
+    }()
+    
     var state: ZLBaseStickertState {
         fatalError()
     }
@@ -154,7 +168,8 @@ class ZLBaseStickerView: UIView, UIGestureRecognizerDelegate {
         if showBorder {
             startTimer()
         }
-        
+        addSubview(deleteButton)
+        bringSubviewToFront(deleteButton)
         addGestureRecognizer(tapGes)
         addGestureRecognizer(pinchGes)
         
@@ -271,8 +286,7 @@ class ZLBaseStickerView: UIView, UIGestureRecognizerDelegate {
         guard gesIsEnabled else { return }
         
         let point = ges.translation(in: superview)
-        gesTranslationPoint = CGPoint(x: point.x / originScale, y: point.y / originScale)
-        
+        gesTranslationPoint = CGPoint(x: point.x * originScale, y: point.y * originScale)
         if ges.state == .began {
             setOperation(true)
         } else if ges.state == .changed {
@@ -300,7 +314,8 @@ class ZLBaseStickerView: UIView, UIGestureRecognizerDelegate {
             onOperation = true
             cleanTimer()
             borderView.layer.borderColor = UIColor.white.cgColor
-            delegate?.stickerBeginOperation(self)
+            deleteButton.isHidden = false
+            delegate?.stickerBeginOperation(self, panGes: panGes)
         } else if !isOn, onOperation {
             onOperation = false
             startTimer()
@@ -332,11 +347,13 @@ class ZLBaseStickerView: UIView, UIGestureRecognizerDelegate {
     
     @objc private func hideBorder() {
         borderView.layer.borderColor = UIColor.clear.cgColor
+        deleteButton.isHidden = true
     }
     
     func startTimer() {
         cleanTimer()
         borderView.layer.borderColor = UIColor.white.cgColor
+        deleteButton.isHidden = false
         timer = Timer.scheduledTimer(timeInterval: 2, target: ZLWeakProxy(target: self), selector: #selector(hideBorder), userInfo: nil, repeats: false)
         RunLoop.current.add(timer!, forMode: .common)
     }
@@ -347,7 +364,6 @@ class ZLBaseStickerView: UIView, UIGestureRecognizerDelegate {
     }
     
     // MARK: UIGestureRecognizerDelegate
-
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
@@ -360,8 +376,9 @@ extension ZLBaseStickerView: ZLStickerViewAdditional {
         hideBorder()
     }
     
-    func moveToAshbin() {
+    @objc func moveToAshbin() {
         cleanTimer()
+        delegate?.stickerDidDelete(self)
         removeFromSuperview()
     }
     

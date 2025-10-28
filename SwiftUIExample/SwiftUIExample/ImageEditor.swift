@@ -10,16 +10,14 @@ import SwiftUI
 import ZLImageEditor
 
 struct ImageEditorWrapper: UIViewControllerRepresentable {
-    @Binding var originalImage: UIImage
-    @Binding var editImage: UIImage?
-    @Binding var editModel: ZLEditImageModel?
+    @Binding var originalImage: [UIImage]
+    @Binding var editImage: [UIImage]?
     @Environment(\.dismiss) private var dismiss
     
     func makeUIViewController(context: Context) -> some UIViewController {
-        let vc = ZLEditImageViewController(image: originalImage, editModel: editModel)
-        vc.editFinishBlock = { editImage, editImageModel in
+        let vc = ZLEditImageViewController(images: originalImage)
+        vc.editFinishBlock = { editImage in
             self.editImage = editImage
-            self.editModel = editImageModel
         }
         vc.cancelBlock = {
             debugPrint("Cancel Edit")

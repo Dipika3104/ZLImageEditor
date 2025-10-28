@@ -26,12 +26,21 @@
 
 import UIKit
 
+enum CustomFonts: String {
+    case karlaLight = "Karla-Light"
+    case karlaRegular = "Karla-Regular"
+    case karlaMedium = "Karla-Medium"
+    case karlaSemiBold = "Karla-SemiBold"
+    case karlaBold = "Karla-Bold"
+    case karlaExtraBold = "Karla-ExtraBold"
+}
+
 struct ZLImageEditorLayout {
-    static let bottomToolBtnH: CGFloat = 34
+    static let bottomToolBtnH: CGFloat = 46
     
-    static let bottomToolTitleFont = UIFont.systemFont(ofSize: 17)
+    static let bottomToolTitleFont = UIFont(name: CustomFonts.karlaMedium.rawValue, size: 24) ?? UIFont.systemFont(ofSize: 17)
     
-    static let bottomToolBtnCornerRadius: CGFloat = 5
+    static let bottomToolBtnCornerRadius: CGFloat = 23
 }
 
 func deviceIsiPhone() -> Bool {

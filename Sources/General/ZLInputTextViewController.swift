@@ -237,7 +237,6 @@ class ZLInputTextViewController: UIViewController {
     func setupUI() {
         view.backgroundColor = .black
         
-        view.addSubview(bgImageView)
         bgImageView.addSubview(coverView)
         
         view.addSubview(cancelBtn)
@@ -364,10 +363,10 @@ extension ZLInputTextViewController: UICollectionViewDelegate, UICollectionViewD
         let c = ZLImageEditorConfiguration.default().textStickerTextColors[indexPath.row]
         cell.color = c
         if c == currentColor {
-            cell.bgWhiteView.layer.transform = CATransform3DMakeScale(1.33, 1.33, 1)
+            cell.bgBlackView.layer.transform = CATransform3DMakeScale(1.33, 1.33, 1)
             cell.colorView.layer.transform = CATransform3DMakeScale(1.2, 1.2, 1)
         } else {
-            cell.bgWhiteView.layer.transform = CATransform3DIdentity
+            cell.bgBlackView.layer.transform = CATransform3DIdentity
             cell.colorView.layer.transform = CATransform3DIdentity
         }
         

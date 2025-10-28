@@ -45,8 +45,8 @@ protocol ZLEditorManagerDelegate: AnyObject {
 }
 
 class ZLEditorManager {
-    private(set) var actions: [ZLEditorAction] = []
-    private(set) var redoActions: [ZLEditorAction] = []
+    var actions: [ZLEditorAction] = []
+    var redoActions: [ZLEditorAction] = []
     
     weak var delegate: ZLEditorManagerDelegate?
     
