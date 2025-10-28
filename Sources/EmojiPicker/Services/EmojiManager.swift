@@ -73,31 +73,29 @@ final class EmojiManager: EmojiManagerProtocol {
     
     // MARK: - Internal Methods
     func provideEmojis() -> EmojiSet? {
-        guard let path = Bundle(for: type(of: self)).path(forResource: emojiVersion, ofType: "json") else {
-            print("[EmojiProvider] JSON file not found for version: \(emojiVersion).json")
+        // Find the correct resource bundle first
+        let bundleName = "ZLImageEditor"
+        let frameworkBundle = Bundle(for: type(of: self))
+        guard
+            let resourceBundleURL = frameworkBundle.url(forResource: bundleName, withExtension: "bundle"),
+            let resourceBundle = Bundle(url: resourceBundleURL)
+        else {
+            print("[EmojiProvider] Could not locate \(bundleName).bundle inside framework")
             return nil
         }
-
+        
+        // Locate emoji JSON inside that bundle
+        guard let path = resourceBundle.path(forResource: emojiVersion, ofType: "json") else {
+            print("[EmojiProvider] JSON file not found for version: \(emojiVersion).json in \(bundleName).bundle")
+            return nil
+        }
+        
         do {
             let data = try Data(contentsOf: URL(fileURLWithPath: path))
             let emojiSet = try decoder.decode(EmojiSet.self, from: data)
             return emojiSet
-        } catch let error as DecodingError {
-            switch error {
-            case .typeMismatch(let type, let context):
-                print("[EmojiProvider] Type mismatch (\(type)) — \(context.debugDescription)")
-            case .valueNotFound(let type, let context):
-                print("[EmojiProvider] Value not found (\(type)) — \(context.debugDescription)")
-            case .keyNotFound(let key, let context):
-                print("[EmojiProvider] Key '\(key.stringValue)' not found — \(context.debugDescription)")
-            case .dataCorrupted(let context):
-                print("[EmojiProvider] Data corrupted — \(context.debugDescription)")
-            @unknown default:
-                print("[EmojiProvider] Unknown decoding error")
-            }
-            return nil
         } catch {
-            print("[EmojiProvider] Failed to load emoji data: \(error.localizedDescription)")
+            print("[EmojiProvider] Failed to decode \(emojiVersion).json — \(error.localizedDescription)")
             return nil
         }
     }
