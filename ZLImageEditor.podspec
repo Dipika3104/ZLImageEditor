@@ -16,10 +16,16 @@ Pod::Spec.new do |s|
   s.requires_arc          = true
   s.frameworks            = 'UIKit', 'Accelerate'
 
-  s.resources             = 'Sources/*.{png,bundle}'
+  s.resource_bundles = {
+    'ZLImageEditor' => [
+      'Sources/ZLImageEditor.bundle/**/*',
+      'Sources/EmojiPicker/Resources/**/*.{json,png}',
+    ]
+  }
 
   s.subspec "Core" do |sp|
     sp.source_files       = ["Sources/**/*.{swift,h,m}"]
+
     sp.exclude_files      = ["Sources/General/ZLWeakProxy.swift"]
   end
 

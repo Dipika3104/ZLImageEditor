@@ -27,7 +27,7 @@ protocol EmojiManagerProtocol {
     /// Provides a set of emojis.
     ///
     /// - Returns: Set of emojis.
-    func provideEmojis() -> EmojiSet
+    func provideEmojis() -> EmojiSet?
 }
 
 /// The class is responsible for getting a relevant set of emojis for iOS version.
@@ -72,20 +72,33 @@ final class EmojiManager: EmojiManagerProtocol {
     }
     
     // MARK: - Internal Methods
-    
-    func provideEmojis() -> EmojiSet {
-        guard let path = Bundle(for: type(of: self)).path(forResource: emojiVersion, ofType: "json"),
+    func provideEmojis() -> EmojiSet? {
+        guard let path = Bundle(for: type(of: self)).path(forResource: emojiVersion, ofType: "json") else {
+            print("[EmojiProvider] JSON file not found for version: \(emojiVersion).json")
+            return nil
+        }
 
-              let data = try? Data(contentsOf: URL(fileURLWithPath: path))
-        else {
-            fatalError("Could not get data from \"\(emojiVersion).json\" file")
+        do {
+            let data = try Data(contentsOf: URL(fileURLWithPath: path))
+            let emojiSet = try decoder.decode(EmojiSet.self, from: data)
+            return emojiSet
+        } catch let error as DecodingError {
+            switch error {
+            case .typeMismatch(let type, let context):
+                print("[EmojiProvider] Type mismatch (\(type)) — \(context.debugDescription)")
+            case .valueNotFound(let type, let context):
+                print("[EmojiProvider] Value not found (\(type)) — \(context.debugDescription)")
+            case .keyNotFound(let key, let context):
+                print("[EmojiProvider] Key '\(key.stringValue)' not found — \(context.debugDescription)")
+            case .dataCorrupted(let context):
+                print("[EmojiProvider] Data corrupted — \(context.debugDescription)")
+            @unknown default:
+                print("[EmojiProvider] Unknown decoding error")
+            }
+            return nil
+        } catch {
+            print("[EmojiProvider] Failed to load emoji data: \(error.localizedDescription)")
+            return nil
         }
-        
-        guard let emojiSet = try? decoder.decode(EmojiSet.self, from: data)
-        else {
-            fatalError("Could not get emoji set from data: \(data)")
-        }
-        
-        return emojiSet
     }
 }

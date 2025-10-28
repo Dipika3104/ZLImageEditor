@@ -51,7 +51,7 @@ final class EmojiPickerViewModel: EmojiPickerViewModelProtocol {
     // MARK: - Private Properties
     
     /// Set of emojis.
-    private let emojiSet: EmojiSet
+    private let emojiSet: EmojiSet?
     
     // MARK: - Init
     
@@ -62,21 +62,21 @@ final class EmojiPickerViewModel: EmojiPickerViewModelProtocol {
     // MARK: - Internal Methods
     
     func numberOfSections() -> Int {
-        return emojiSet.categories.count
+        return emojiSet?.categories.count ?? 0
     }
     
     func numberOfItems(in section: Int) -> Int {
-        return emojiSet.categories[section].identifiers.count
+        return emojiSet?.categories[section].identifiers.count ?? 0
     }
     
     func emoji(at indexPath: IndexPath) -> String {
-        let name = emojiSet.categories[indexPath.section].identifiers[indexPath.row]
-        return emojiSet.emojis[name]?.emoji ?? "⚠️"
+        let name = emojiSet?.categories[indexPath.section].identifiers[indexPath.row] ?? ""
+        return emojiSet?.emojis[name]?.emoji ?? "⚠️"
     }
     
     func sectionHeaderViewModel(for section: Int) -> String {
         return NSLocalizedString(
-            emojiSet.categories[section].type.rawValue,
+            emojiSet?.categories[section].type.rawValue ?? "people",
             bundle: .module,
             comment: ""
         )
