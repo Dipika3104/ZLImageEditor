@@ -42,7 +42,7 @@ final class EmojiPickerView: UIView {
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
         layout.sectionHeadersPinToVisibleBounds = true
         layout.itemSize = CGSize(width: 30, height: 30)
-        layout.headerReferenceSize = CGSize(width: currentScreenSize.width, height: 40)
+        layout.headerReferenceSize = CGSize(width: currentScreenSize.width, height: 35)
         layout.minimumLineSpacing = 5
         layout.minimumInteritemSpacing = 5
         

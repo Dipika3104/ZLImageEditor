@@ -28,10 +28,18 @@ final class EmojiCollectionViewHeader: UICollectionReusableView {
     
     private let headerLabel: UILabel = {
         let label: UILabel = UILabel()
-        label.textColor = .systemGray
-        label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+        label.textColor = .darkGray
+        label.font = UIFont.systemFont(ofSize: 15, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
+    }()
+    
+    let closeBtn: UIButton = {
+        let btn: UIButton = UIButton()
+        btn.setImage(UIImage(named: "ic_cancel"), for: .normal)
+        btn.setImage(UIImage(named: "ic_cancel"), for: .selected)
+        btn.translatesAutoresizingMaskIntoConstraints = false
+        return btn
     }()
     
     // MARK: - Init
@@ -57,11 +65,17 @@ final class EmojiCollectionViewHeader: UICollectionReusableView {
     private func setupLayout() {
         backgroundColor = .popoverBackgroundColor
         addSubview(headerLabel)
+        addSubview(closeBtn)
         
         NSLayoutConstraint.activate([
-            headerLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 7),
-            headerLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            headerLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4)
+            headerLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            headerLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
+            headerLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
+            
+            closeBtn.heightAnchor.constraint(equalToConstant: 35),
+            closeBtn.widthAnchor.constraint(equalToConstant: 35),
+            closeBtn.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -6),
+            closeBtn.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
         ])
     }
 }

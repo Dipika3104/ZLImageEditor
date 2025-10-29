@@ -1122,6 +1122,10 @@ open class ZLEditImageViewController: UIViewController {
         editToolCollectionView.isHidden = show
     }
     
+    @objc func closeEmojiPicker() {
+        imageStickerBtnClick(show:false)
+    }
+    
     func getEmojiSticker(text:String) {
         if text != "" {
             var image: UIImage?
@@ -1979,6 +1983,7 @@ extension ZLEditImageViewController: UICollectionViewDataSource, UICollectionVie
                 else { return UICollectionReusableView() }
                 
                 sectionHeader.configure(with: viewModel.sectionHeaderViewModel(for: indexPath.section))
+                sectionHeader.closeBtn.addTarget(self, action: #selector(closeEmojiPicker), for: .touchUpInside)
                 return sectionHeader
             default:
                 return UICollectionReusableView()
