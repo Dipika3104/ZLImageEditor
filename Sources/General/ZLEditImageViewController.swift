@@ -1029,9 +1029,7 @@ open class ZLEditImageViewController: UIViewController {
     }
     
     @objc func cancelBtnClick() {
-        dismiss(animated: animateDismiss) {
-            self.cancelBlock?()
-        }
+        self.cancelBlock?()
     }
     
     func drawBtnClick() {
